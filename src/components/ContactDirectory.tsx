@@ -1,29 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Mail, Phone, Search, Users, ShieldCheck, MessageCircle, ExternalLink, GraduationCap } from 'lucide-react';
-
-interface Staff {
-  id: number;
-  name_en: string;
-  name_ar: string;
-  role_en: string;
-  role_ar: string;
-  email: string;
-  phone: string;
-  type: 'instructor' | 'admin';
-}
+import { Mail, Phone, Search, Users, ShieldCheck, MessageCircle, ExternalLink } from 'lucide-react';
+import { STAFF_DATA, Staff } from '../data/staff';
 
 const ContactDirectory: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const [staff, setStaff] = useState<Staff[]>([]);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<'all' | 'instructor' | 'admin'>('all');
-
-  useEffect(() => {
-    fetch('/api/staff')
-      .then(res => res.json())
-      .then(data => setStaff(data));
-  }, []);
 
   const getOutlookLink = (email: string) => {
     return `mailto:${email}`;
@@ -35,7 +18,7 @@ const ContactDirectory: React.FC = () => {
     return `https://wa.me/${fullPhone}`;
   };
 
-  const filtered = staff.filter(s => {
+  const filtered = STAFF_DATA.filter(s => {
     const matchesSearch = 
       s.name_en.toLowerCase().includes(search.toLowerCase()) ||
       s.name_ar.includes(search) ||
