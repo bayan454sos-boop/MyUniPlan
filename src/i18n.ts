@@ -52,7 +52,8 @@ const resources = {
       "contact_lecturer": "Contact My Lecturer",
       "course_unlocked": "Course Unlocked!",
       "qualified_to_take": "{{from}} has unlocked {{course}}.",
-      "it_opens": "It opens:"
+      "it_opens": "It opens:",
+      "copy_email": "Copy Email"
     }
   },
   ar: {
@@ -104,7 +105,8 @@ const resources = {
       "contact_lecturer": "تواصل مع المحاضر",
       "course_unlocked": "تم فتح مساق جديد!",
       "qualified_to_take": "لقد فتح {{from}} المساق {{course}}.",
-      "it_opens": "يفتح هذا المساق:"
+      "it_opens": "يفتح هذا المساق:",
+      "copy_email": "نسخ البريد الإلكتروني"
     }
   }
 };

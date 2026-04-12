@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mail, GraduationCap, AlertCircle, MessageSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { openInOutlook } from '../lib/emailUtils';
 
 const AskSenior: React.FC = () => {
   const { i18n } = useTranslation();
@@ -19,7 +20,7 @@ const AskSenior: React.FC = () => {
       ? `مرحباً ${name}، أحتاج إلى بعض المساعدة بخصوص خطتي الدراسية...` 
       : `Hi ${name}, I need some help regarding my study plan...`;
     
-    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    openInOutlook(email, subject, body);
   };
 
   return (

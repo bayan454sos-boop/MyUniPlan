@@ -1,15 +1,30 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Mail, Phone, Search, Users, ShieldCheck, MessageCircle, ExternalLink } from 'lucide-react';
+import { Mail, Phone, Search, Users, ShieldCheck, MessageCircle, ExternalLink, Copy, Check } from 'lucide-react';
 import { STAFF_DATA, Staff } from '../data/staff';
+import { openInOutlook, copyToClipboard } from '../lib/emailUtils';
+import { toast } from 'sonner';
 
 const ContactDirectory: React.FC = () => {
   const { t, i18n } = useTranslation();
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<'all' | 'instructor' | 'admin'>('all');
+  const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
 
-  const getOutlookLink = (email: string) => {
-    return `mailto:${email}`;
+  const handleEmailClick = (e: React.MouseEvent, email: string) => {
+    e.preventDefault();
+    openInOutlook(email);
+  };
+
+  const handleCopyEmail = async (e: React.MouseEvent, email: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const success = await copyToClipboard(email);
+    if (success) {
+      setCopiedEmail(email);
+      toast.success(i18n.language === 'ar' ? 'تم نسخ البريد الإلكتروني' : 'Email copied to clipboard');
+      setTimeout(() => setCopiedEmail(null), 2000);
+    }
   };
 
   const getWhatsAppLink = (phone: string) => {
@@ -90,16 +105,25 @@ const ContactDirectory: React.FC = () => {
             </div>
 
             <div className="space-y-3 pt-4 border-t">
-              <a 
-                href={getOutlookLink(s.email)} 
-                className="flex items-center justify-between group/link text-sm text-slate-600 hover:text-emerald-600 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <Mail className="w-4 h-4" />
-                  <span className="truncate max-w-[180px]">{s.email}</span>
+              <div className="flex items-center justify-between group/link">
+                <button 
+                  onClick={(e) => handleEmailClick(e, s.email)}
+                  className="flex items-center gap-3 text-sm text-slate-600 hover:text-emerald-600 transition-colors truncate flex-1 text-left"
+                >
+                  <Mail className="w-4 h-4 shrink-0" />
+                  <span className="truncate">{s.email}</span>
+                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={(e) => handleCopyEmail(e, s.email)}
+                    className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+                    title={t('copy_email')}
+                  >
+                    {copiedEmail === s.email ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                  <ExternalLink className="w-3 h-3 text-slate-300" />
                 </div>
-                <ExternalLink className="w-3 h-3 opacity-0 group-hover/link:opacity-100 transition-opacity" />
-              </a>
+              </div>
               
               {s.phone && (
                 <div className="flex items-center justify-between">
