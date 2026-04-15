@@ -13,6 +13,7 @@ const ContactDirectory: React.FC = () => {
 
   const handleEmailClick = (e: React.MouseEvent, email: string) => {
     e.preventDefault();
+    toast.success('Opening Outlook...');
     openInOutlook(email);
   };
 

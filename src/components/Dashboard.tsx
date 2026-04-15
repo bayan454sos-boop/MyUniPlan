@@ -8,6 +8,7 @@ import i18n from '../i18n';
 import { ENGLISH_PROGRAM_PLAN, Course } from '../data/studyPlan';
 import CourseCard from './CourseCard';
 import { Progress } from './ProgressBar';
+import { openInOutlook } from '../lib/emailUtils';
 
 const SOUNDS = {
   TICK: 'https://www.soundjay.com/buttons/sounds/button-16.mp3', // More reliable click sound
@@ -366,8 +367,7 @@ Total Credits: ${selectedCourses.reduce((acc, c) => acc + c.credits, 0)}
 Thank you,
 ${studentName}`;
 
-    const mailtoUrl = `mailto:${advisorEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoUrl;
+    openInOutlook(advisorEmail, subject, body);
     setIsRegisterModalOpen(false);
     toast.success('Opening Outlook...');
   };

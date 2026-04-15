@@ -3,12 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { Mail, GraduationCap, AlertCircle, MessageSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { openInOutlook } from '../lib/emailUtils';
+import { toast } from 'sonner';
 
 const AskSenior: React.FC = () => {
   const { i18n } = useTranslation();
 
   const seniors = [
-    { name_en: 'Bayan', name_ar: 'بيان', email: '1663s22119@utas.edu.om' },
+    { name_en: 'Bayan', name_ar: 'بيان', email: '1633S22119@utas.edu.om' },
     { name_en: 'Noor Al-Huda', name_ar: 'نور الهدى', email: '1633s2259@utas.edu.om' },
     { name_en: 'Ariyam', name_ar: 'أريام', email: '2021161081@utas.edu.om' },
     { name_en: 'Wedad', name_ar: 'وداد', email: '1633s2274@utas.edu.om' },
@@ -18,8 +19,9 @@ const AskSenior: React.FC = () => {
     const subject = i18n.language === 'ar' ? `طلب مساعدة أكاديمية - ${name}` : `Academic Assistance Request - ${name}`;
     const body = i18n.language === 'ar' 
       ? `مرحباً ${name}، أحتاج إلى بعض المساعدة بخصوص خطتي الدراسية...` 
-      : `Hi ${name}, I need some help regarding my study plan...`;
+      : `Hi ${name}, I need some help regarding...`;
     
+    toast.success('Opening Outlook...');
     openInOutlook(email, subject, body);
   };
 

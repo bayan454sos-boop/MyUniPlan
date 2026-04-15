@@ -1,32 +1,36 @@
 /**
  * Utility to handle email links with a preference for Microsoft Outlook.
  */
-export const openInOutlook = (email: string, subject?: string, body?: string) => {
-  const params = [];
-  if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
-  if (body) params.push(`body=${encodeURIComponent(body)}`);
-  const queryString = params.length > 0 ? `?${params.join('&')}` : '';
+import { toast } from 'sonner';
 
-  const mailtoUrl = `mailto:${email}${queryString}`;
+/**
+ * Utility to handle email links with a strong preference for the Microsoft Outlook APP.
+ */
+export const openInOutlook = (email: string, subject?: string, body?: string) => {
+  const subjectParam = subject ? `&subject=${encodeURIComponent(subject)}` : '';
+  const bodyParam = body ? `&body=${encodeURIComponent(body)}` : '';
   
-  // On mobile devices, we can try the ms-outlook protocol
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  // Standard mailto link - This is the most compatible way to open the mail app
+  // on ANY device (iPhone, Android, Windows, Mac).
+  // If the user has Outlook set as their default mail app, this will open Outlook.
+  const mailtoUrl = `mailto:${email}?${subjectParam.replace('&', '')}${bodyParam}`;
+
+  // Office 365 Web Deep Link - Guaranteed to open Outlook (Web)
+  const outlookWebUrl = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(email)}${subjectParam}${bodyParam}`;
+
+  // To avoid "Host unknown url" errors, we use the standard mailto protocol.
+  // We also provide a fallback to the web version if the window doesn't lose focus.
   
-  if (isMobile) {
-    const outlookProtocolUrl = `ms-outlook://compose?to=${email}${queryString.replace('?', '&')}`;
-    window.location.href = outlookProtocolUrl;
-    
-    // Fallback to standard mailto after a short delay if the protocol isn't handled
-    setTimeout(() => {
-      if (document.hasFocus()) {
-        window.location.href = mailtoUrl;
-      }
-    }, 500);
-  } else {
-    // On desktop, mailto: is the standard way to trigger the default mail client.
-    // To ensure this opens Outlook, the user must set Outlook as their default mail app in system settings.
-    window.location.href = mailtoUrl;
-  }
+  window.location.href = mailtoUrl;
+
+  // Fallback Mechanism
+  // If the mail app doesn't open (e.g. no mail app configured), 
+  // we open the Outlook Web version in a new tab after a short delay.
+  setTimeout(() => {
+    if (document.hasFocus()) {
+      window.open(outlookWebUrl, '_blank');
+    }
+  }, 1500);
 };
 
 /**
